@@ -17,11 +17,14 @@
 				<h3>Filtres</h3>
 				<button class="btn-trier">Trier par prix croissant</button>
 				<br>
-				<button class="btn-trier-decroissant">Trier par prix decroissant</button>
-				<br>
 				<button class="btn-filtrer">Filtrer les pièces non abordables</button>
 				<br>
-				<button class="btn-filtrer-description">Filtrer les pieces sans description</button>
+				<p>
+					<label for="prix-max">Filtrer par prix maximum :</label>
+					<br>
+					<input type="range" id="prix-max" name="prix-max" min="0" max="60" step="5">
+					<span id="prix-valeur">60</span> €
+				</p>
 			</section>
 
 			<!-- Fiches produits -->
