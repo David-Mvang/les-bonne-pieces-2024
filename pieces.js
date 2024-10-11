@@ -20,7 +20,11 @@ function genererPieces(pieces){
         const descriptionElement = document.createElement("p");
         descriptionElement.innerText = pieces[i].description ?? ("Pas de description pour le moment")
         const stockElement = document.createElement("p")
-        stockElement.innerText = pieces[i].Disponibilite ? "En stock" : "Rupture de stock";        
+        stockElement.innerText = pieces[i].Disponibilite ? "En stock" : "Rupture de stock";    
+        const avisBouton = document.createElement("button");
+        avisBouton.dataset.id = pieces.id;
+        avisBouton.innerText = "Afficher les avis";
+            
     
         // On rattache la balise article a la section fiche
         sectionFiches.appendChild(pieceElement)
@@ -32,12 +36,14 @@ function genererPieces(pieces){
         pieceElement.appendChild(categorieElement)
         pieceElement.appendChild(descriptionElement)
         pieceElement.appendChild(stockElement)
+        pieceElement.appendChild(avisBouton);
     }
 }
 genererPieces(pieces)
 
-// Ajout du listener pour trier les pieces par ordre de prix croissant
+// Gestion des bouttons
 const boutonTrier = document.querySelector(".btn-trier");
+
 boutonTrier.addEventListener("click", function (){
     const piecesOrdonnees = Array.from(pieces);
     piecesOrdonnees.sort(function(a,b){
@@ -47,9 +53,42 @@ boutonTrier.addEventListener("click", function (){
     genererPieces(piecesOrdonnees)
 })
 
+const boutonFiltrer = document.querySelector(".btn-filtrer")
+
+boutonFiltrer.addEventListener("click", function(){
+    const piecesFiltrees = pieces.filter(function(piece){
+        return piece.prix <= 35;
+    })
+    document.querySelector(".fiches").innerHTML = ""
+    genererPieces(piecesFiltrees)
+})
+
+const boutonDecroissant = document.querySelector(".btn-decroissant");
+
+boutonDecroissant.addEventListener("click", function () {
+    const piecesOrdonnees = Array.from(pieces);
+    piecesOrdonnees.sort(function (a, b) {
+        return b.prix - a.prix;
+     });
+     document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesOrdonnees);
+});
+
+const boutonNoDescription = document.querySelector(".btn-nodesc");
+
+boutonNoDescription.addEventListener("click", function () {
+    const piecesFiltrees = pieces.filter(function (piece) {
+        return piece.description
+    });
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
+});
+
+
 // Ajout du listener pour afficher les pieces par rapport au prix maximum lors du glissage par la souris
 const inputPrixMax = document.querySelector("#prix-max")
 const prixAffiche = document.querySelector("#prix-valeur")
+
 inputPrixMax.addEventListener("input", function() {
     prixAffiche.innerText = inputPrixMax.value 
 
@@ -60,32 +99,25 @@ inputPrixMax.addEventListener("input", function() {
     genererPieces(piecesFiltrees)
 })
 
-// Ajout du listener pour filtrer les pieces non abordables
-const boutonFiltrer = document.querySelector(".btn-filtrer")
-boutonFiltrer.addEventListener("click", function(){
-    const piecesFiltrees = pieces.filter(function(piece){
-        return piece.prix <= 35;
-    })
-    document.querySelector(".fiches").innerHTML = ""
-    genererPieces(piecesFiltrees)
-})
-
 // Copie de la liste en affichant que le nom et prix des pieces disponibles
 const nomsEtPrixPiecesDisponibles = pieces
 .filter(piece => piece.Disponibilite)
 .map(piece => `${piece.nom} - ${piece.prix} €.`)
 console.log(nomsEtPrixPiecesDisponibles)
-// creation de la balise liste qui va contenir tous les noms et prix des pieces disponibles
+
 const piecesDisponible = document.createElement("ul")
-// Ajout de chaque nom a la liste abordable
+
 for(let i = 0; i < nomsEtPrixPiecesDisponibles.length; i++){
     const nomPrixPiece = document.createElement("li")
     nomPrixPiece.innerText = nomsEtPrixPiecesDisponibles[i]
     piecesDisponible.appendChild(nomPrixPiece)
 }
-// Ajout de la liste au bloc resultat fiches
+
 document.querySelector(".disponibles")
 .appendChild(piecesDisponible)
+
+
+
 
 
 
