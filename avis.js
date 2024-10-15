@@ -10,7 +10,7 @@ export function ajoutListenerAvis() {
 
             const avisElement = document.createElement("p")
             for(let i = 0; i < avis.length; i++){
-                avisElement.innerHTML += `<p>${avis[i].utilisateur}:</p> ${avis[i].commentaire}</br>`
+                avisElement.innerHTML += `<p>${avis[i].utilisateur}:</p> ${avis[i].commentaire}</p>${avis[i].nbEtoiles}</br>`
             }
             
             pieceElement.appendChild(avisElement);
@@ -18,4 +18,27 @@ export function ajoutListenerAvis() {
     }
 }
 
-    
+export function ajoutListenerEnvoyerAvis() {
+    const formulaireAvis = document.querySelector(".formulaire-avis");
+    formulaireAvis.addEventListener("submit", function(event){
+        event.preventDefault();
+
+        const avis = {
+            pieceId: parseInt(event.target.querySelector("[name=piece-id]").value), 
+            utilisateur: event.target.querySelector("[name=utilisateur]").value,
+            commentaire: event.target.querySelector("[name=commentaire]").value,
+            nbEtoiles: parseInt(event.target.querySelector("[name=nbEtoiles]").value)
+        }
+        console.log("nbEtoiles:", event.target.querySelector("[name=nbEtoiles]").value);
+
+        const chargeUtile = JSON.stringify(avis);
+
+        fetch("http://localhost:8081/avis", {
+            method: "POST",
+            headers: {"content-type": "application/json"},
+            body: chargeUtile
+        })
+        
+        formulaireAvis.reset();
+    });
+}

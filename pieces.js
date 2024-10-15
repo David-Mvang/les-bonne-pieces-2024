@@ -1,8 +1,10 @@
-import { ajoutListenerAvis } from "./avis.js";
+import { ajoutListenerAvis, ajoutListenerEnvoyerAvis } from "./avis.js";
 
 // Récupération des pièces depuis l'API 
 const reponse = await fetch(`http://localhost:8081/pieces`); 
 const pieces = await reponse.json();
+
+ajoutListenerEnvoyerAvis();
 
 function genererPieces(pieces){
     for (let i = 0; i < pieces.length; i++){
