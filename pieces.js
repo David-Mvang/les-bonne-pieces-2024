@@ -1,18 +1,32 @@
-import { ajoutListenerAvis, ajoutListenerEnvoyerAvis } from "./avis.js";
+import { ajoutListenerAvis, afficherAvis, ajoutListenerEnvoyerAvis } from "./avis.js";
 
-// Récupération des pièces depuis l'API 
-const reponse = await fetch(`http://localhost:8081/pieces`); 
-const pieces = await reponse.json();
+// Recuperation des informations dans le local storage
+    let pieces = window.localStorage.getItem("pieces");
+    if(pieces === null){
+        // Récupération des pièces depuis l'API 
+        const reponse = await fetch(`http://localhost:8081/pieces`); 
+        pieces = await reponse.json();
+        // Transformation des donnees en formant json
+        const valeurPieces = JSON.stringify(pieces);
+        // Stockage des informations dans le localstorage 
+        window.localStorage.setItem("pieces", valeurPieces);
+    }else{
+        pieces = JSON.parse(pieces);
+    }
 
+// On appelle la fonction pour ajouter le Listener au formulaire
 ajoutListenerEnvoyerAvis();
 
 function genererPieces(pieces){
     for (let i = 0; i < pieces.length; i++){
         // recuperation de l'element DOM qui acceuillera les fiches
         const sectionFiches = document.querySelector(".fiches")
+        console.log(sectionFiches)
         // creation d'une balise dedier a une piece automobile
         const pieceElement = document.createElement("article")
         // creation des elelements de cette piece
+        // pieceElement.setAttribute("data-id", pieces[i].id);
+        pieceElement.dataset.id = pieces[i].id;
         const imageElement = document.createElement("img");
         imageElement.src = pieces[i].image
         const nomElement = document.createElement("h2")
@@ -24,7 +38,7 @@ function genererPieces(pieces){
         const descriptionElement = document.createElement("p");
         descriptionElement.innerText = pieces[i].description ?? ("Pas de description pour le moment")
         const stockElement = document.createElement("p")
-        stockElement.innerText = pieces[i].Disponibilite ? "En stock" : "Rupture de stock";    
+        stockElement.innerText = pieces[i].disponibilite ? "En stock" : "Rupture de stock";    
         const avisBouton = document.createElement("button");
         avisBouton.dataset.id = pieces[i].id;
         avisBouton.innerText = "Afficher les avis";
@@ -43,7 +57,19 @@ function genererPieces(pieces){
     }
     ajoutListenerAvis();
 }
-genererPieces(pieces)
+console.log(pieces);
+genererPieces(pieces);
+
+for(let i = 0; i < pieces.length; i++){
+    const id = pieces[i].id;
+    const avisJSON = window.localStorage.getItem(`avis-piece-${id}`);
+    const avis = JSON.parse(avisJSON);
+
+    if(avis !== null){
+        const pieceElement = document.querySelector(`article[data-id="${id}"]`);
+        afficherAvis(pieceElement, avis)
+    }
+}
 
 // Gestion des bouttons
 const boutonTrier = document.querySelector(".btn-trier");
@@ -111,15 +137,19 @@ const nomsEtPrixPiecesDisponibles = pieces
 const piecesDisponible = document.createElement("ul")
 
 for(let i = 0; i < nomsEtPrixPiecesDisponibles.length; i++){
-    const nomPrixPiece = document.createElement("li")
-    nomPrixPiece.innerText = nomsEtPrixPiecesDisponibles[i]
-    piecesDisponible.appendChild(nomPrixPiece)
+    const nomPrixPiece = document.createElement("li");
+    nomPrixPiece.innerText = nomsEtPrixPiecesDisponibles[i];
+    piecesDisponible.appendChild(nomPrixPiece);
 }
 
 document.querySelector(".disponibles")
-.appendChild(piecesDisponible)
+.appendChild(piecesDisponible);
 
-
+// Ajout du listener pour mettre à jour des données du localStorage
+const boutonMettreAJour = document.querySelector(".btn-maj");
+boutonMettreAJour.addEventListener("click", function () {
+  window.localStorage.removeItem("pieces");
+});
 
 
 

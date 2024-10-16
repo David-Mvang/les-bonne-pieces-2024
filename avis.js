@@ -6,16 +6,21 @@ export function ajoutListenerAvis() {
             const id = event.target.dataset.id;
             const reponse = await fetch(`http://localhost:8081/pieces/${id}/avis`); 
             const avis = await reponse.json();
+            window.localStorage.setItem(`avis-piece-${id}`, JSON.stringify(avis));
             const pieceElement = event.target.parentElement;
 
-            const avisElement = document.createElement("p")
-            for(let i = 0; i < avis.length; i++){
-                avisElement.innerHTML += `<p>${avis[i].utilisateur}:</p> ${avis[i].commentaire}</p>${avis[i].nbEtoiles}</br>`
-            }
-            
-            pieceElement.appendChild(avisElement);
-        })
+            afficherAvis(pieceElement, avis);
+         })
     }
+}
+
+export function afficherAvis(pieceElement, avis){
+    const avisElement = document.createElement("p")
+    for(let i = 0; i < avis.length; i++){
+        avisElement.innerHTML += `<p>${avis[i].utilisateur}:</p> ${avis[i].commentaire}</p>${avis[i].nbEtoiles}</br>`
+    }
+    
+    pieceElement.appendChild(avisElement);
 }
 
 export function ajoutListenerEnvoyerAvis() {
@@ -42,3 +47,5 @@ export function ajoutListenerEnvoyerAvis() {
         formulaireAvis.reset();
     });
 }
+
+
