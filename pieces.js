@@ -131,7 +131,7 @@ inputPrixMax.addEventListener("input", function() {
 
 // Copie de la liste en affichant que le nom et prix des pieces disponibles
 const nomsEtPrixPiecesDisponibles = pieces
-.filter(piece => piece.Disponibilite)
+.filter(piece => piece.disponibilite)
 .map(piece => `${piece.nom} - ${piece.prix} €.`)
 
 const piecesDisponible = document.createElement("ul")
@@ -144,6 +144,19 @@ for(let i = 0; i < nomsEtPrixPiecesDisponibles.length; i++){
 
 document.querySelector(".disponibles")
 .appendChild(piecesDisponible);
+
+// Copie de la liste en affichant en affichant que les pieces abordables
+const listePiecesAbordables = pieces.filter(piece => piece.prix <= 35);
+const piecesAbordables = document.createElement("ul");
+
+for(let i = 0; i < listePiecesAbordables.length; i++){
+    const elementAbordable = document.createElement("li");
+    elementAbordable.innerText = listePiecesAbordables[i].nom;
+    piecesAbordables.appendChild(elementAbordable);
+}
+
+document.querySelector(".abordables")
+.appendChild(piecesAbordables);
 
 // Ajout du listener pour mettre à jour des données du localStorage
 const boutonMettreAJour = document.querySelector(".btn-maj");
